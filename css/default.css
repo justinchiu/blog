@@ -32,16 +32,34 @@ footer {
 
 h1 {
   font-size: 2.4rem;
+  font-weight: bold;
 }
 
 h2 {
   font-size: 2rem;
+  text-decoration: underline;
+}
+
+em {
+  font-style: normal;
 }
 
 article .header {
-  font-size: 1.4rem;
-  font-style: italic;
-  color: #555;
+  font-size: 1.6rem;
+  font-style: normal;
+  color: #000;
+}
+
+table, th, td {
+  border: 0.05em solid black;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.3em;
 }
 
 .logo a {
@@ -137,4 +155,9 @@ article .header {
     float: left;
     font-size: 1.8rem;
   }
+}
+
+.katex {
+  line-height: 1;
+  font-size: 1.16em;
 }

@@ -3,8 +3,11 @@
 import           Data.Monoid (mappend)
 import           Hakyll
 
+import           Text.Pandoc.Options
+
 
 --------------------------------------------------------------------------------
+
 main :: IO ()
 main = hakyll $ do
     match "images/*" $ do
@@ -23,7 +26,7 @@ main = hakyll $ do
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
+        compile $ pandocMathCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
@@ -59,9 +62,33 @@ main = hakyll $ do
 
     match "templates/*" $ compile templateBodyCompiler
 
+    match "js/**" $ do
+        -- don't change its name nor directory
+        route   idRoute
+        -- don't change its content
+        compile copyFileCompiler
+
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
+
+pandocMathCompiler :: Compiler (Item String)
+pandocMathCompiler =
+    let
+        mathExtensions =
+            [ Ext_tex_math_dollars
+            , Ext_tex_math_double_backslash
+            , Ext_latex_macros
+            , Ext_tex_math_single_backslash
+            ]
+        defaultExtensions = writerExtensions defaultHakyllWriterOptions
+        newExtensions = foldr enableExtension defaultExtensions mathExtensions
+        writerOptions =
+            defaultHakyllWriterOptions
+                { writerExtensions = newExtensions
+                , writerHTMLMathMethod = KaTeX ""
+                }
+    in pandocCompilerWith defaultHakyllReaderOptions writerOptions
