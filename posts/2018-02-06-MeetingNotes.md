@@ -190,3 +190,18 @@ Table 4: Attention statistics.
 8. Multiheaded attention?
 9. Why does adding embeddings result in worse performance?!
 
+## Milestones
+
+so i think based on the LSD paper, segmentations (either number or algorithm) can have a large effect on performance,
+but any model changes I make would be orthogonal.
+for next week I want to have a pipeline set up which makes it easy to run on different segmentations so
+i can start experimenting with
+
+1. LSD
+2. sam's idea for multi-tasking the phrase encoder as BoW autoencoder
+3. multi-headed attention.
+
+for efficiency, I need to 
+1. Distill to small model
+2. Get the speedups with weight pruning? 
+3. What are the speedups people use nowadays
