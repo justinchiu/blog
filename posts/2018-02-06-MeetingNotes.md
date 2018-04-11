@@ -205,3 +205,6 @@ for efficiency, I need to
 1. Distill to small model
 2. Get the speedups with weight pruning? 
 3. What are the speedups people use nowadays
+
+use hierarchical softmax (one for words, one for phrases?) and maximize marginal l?
+

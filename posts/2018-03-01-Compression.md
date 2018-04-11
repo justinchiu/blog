@@ -193,3 +193,36 @@ pseudocode.render(code, parentEl, options);
 
 # Other compression schemes
 Do they make sense for phrases?
+
+# Analysis of BPE vs ngram
+
+| Segmentation    | Train Length | Avg Sen Len | Avg unit len | Phrase Count | Atom Count |
+| :-------------- | -----------: | ----------: | -----------: | -----------: | ---------: |
+| Word            |      3273295 |        20.4 |            4 |            0 |    3273295 |
+| Ngrams 42k      |      2036480 |        12.7 |            7 |       769282 |    1267204 |
+| BPE (Joint 40k) |      4434910 |        27.7 |          3.5 |            0 |    4434910 |
+| Xword BPE 32k   |      2801504 |        17.5 |          5.9 |       729233 |    2072277 |
+| Xword BPE 64k   |      2583680 |        16.1 |          6.4 |       790425 |    1793261 |
+| Xword 32k unk   |      2784290 |        17.4 |          5.9 |       729118 |    2055178 |
+| Xword 64k unk   |      2574701 |        16.1 |          6.3 |       789141 |    1785566 |
+
+Since the phrase counts are similar, we posit that both techniques (XBPE and greedy) result in somewhat similar ngrams,
+which we checked by eye.
+
+Suppose that BPE mainly merges subword units before getting to xword.
+If we reorder the merge agenda so that all subword merges happen before phrases, we should get an upper bound on the number of subword units.
+An approximate lower bound on the length of this pure subword corpus is given by the length of the BPE corpus.
+We then note that the compression ratio from word to ngram is 1.6x, and from word to XBPE 32k is 1.2x.
+However, when working with the subword upper bound, we get a compression ratio from BPE to XBPE 32k of 1.6x.
+
+Rare words do not seem to be a large factor in the length expansion, as the corpus statistics are relatively unchanged after 
+unk-ing words that occur fewer than 3 times and an inspection by eye of the vocabulary leads us to believe the two are 
+quite similar.
+
+Oddity in all BPE subword models: certain obvious constructions like "& apos ;" do not get merged, which is pretty surprising. 
+Is this a bug?
+
+The objective is minimize total emission length $\mathcal{J}$.
+Given a super-type inventory, objective decomposes into $\sum_{x} len(x) * freq(x)$
+
+Is ngram the maximizer of objective $\mathcal{J}$?
