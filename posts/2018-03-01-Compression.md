@@ -222,7 +222,9 @@ quite similar.
 Oddity in all BPE subword models: certain obvious constructions like "& apos ;" do not get merged, which is pretty surprising. 
 Is this a bug?
 
-The objective is minimize total emission length $\mathcal{J}$.
-Given a super-type inventory, objective decomposes into $\sum_{x} len(x) * freq(x)$
+The objective is minimize total emission length.
+Given a super-type inventory $\Sigma$, the objective decomposes into
+$$\mathcal{J}(\Sigma) = \sum_{x\in\Sigma} \textrm{len}(x) * \textrm{freq}(x).$$
+We can define $\Sigma$ 
 
 Is ngram the maximizer of objective $\mathcal{J}$?
