@@ -228,3 +228,59 @@ $$\mathcal{J}(\Sigma) = \sum_{x\in\Sigma} \textrm{len}(x) * \textrm{freq}(x).$$
 We can define $\Sigma$ 
 
 Is ngram the maximizer of objective $\mathcal{J}$?
+
+# A Retake on Phrases as Compression
+
+Let us consider the problem of lossless source encoding of phrases more formally.
+We claim that the problem of selecting a phrase vocabulary is equivalent to the problem considered by Tunstall coding.
+We take a brief segway and give a very overview of Tunstall coding.
+
+## Tunstall Coding
+We have a fixed size dictionary or codebook $\mathcal{D}$ of symbols and would like to learn a map $f: \Sigma^+ \to \mathcal{D}$.
+The representation of each symbol in $\mathcal{D}$ has size $\log |\mathcal{D}|$.
+The algorithm learns a parse tree in a top down fashion by starting with all characters in the alphabet $\Sigma$ as children
+of the root node, then expanding the leaf node that has highest frequency or probability.
+The goal of Tunstall coding is to maximize the expected length of the covered source sequence per codeword or solve the problem
+$${\arg\max}_\mathcal{D} \sum_{w\in\mathcal{D}} p(w)\ell(w),$$
+where $\ell(w)$ is the number of source symbols encoded by $w$.
+
+## Argument for a word-based approach
+The above argument, that Tunstall coding or various other Variable-to-Fixed encoding maximize entropy, holds for a lossless approach.
+However, if we care more about the expected length than retaining losslessness maybe we can do better.
+
+The efficiency of compression methods is lower bounded by the entropy of the source.
+
+The average code length is an upper bound on the entropy of the source.
+
+The Tunstall coding algorithm finds the parse tree that maximizes the average parse string length,
+or equivalently whose induced distribution has maximum entropy. Why?
+
+Can we apply inside outside using the full tree?
+
+Tunstall coding maximizes entropy of the codes.
+Ideally, it creates a codebook where every word is equiprobable.
+Coding algorithms seek to minimize the expected code length, which in the case of Tunstall codes is given by
+$$\arg\min_{\mathcal{D}} \mathbb{E}_{w\sim\mathcal{D}} \Bigg[\frac{\log|\mathcal{D}|}{\ell(w)}\Bigg].$$
+
+Connection to entropy maximization?
+BPE objective is to maximize entropy, since it terminates when every symbol appears once.
+This means that as we move towards convergence, we take from the head of the bigram distribution and split its mass into the body.
+This is good when a has a very common postfix.
+However, when a symbol has infrequent postfixes, they will remain as remainders since BPE is run with early stopping.
+How to check this: 
+Looks like this was wrong.
+
+New hypothesis: at convergence, BPE compression will be good (as good as ngram).
+Why this could be valid, for ngrams we make *many* more steps than we would with BPE,
+and thus converges faster (and maybe to a different point).
+This means that there are pieces that are not yet merged in BPE but you have already gotten because of the ngram heuristic.
+How to verify, run BPE for longer!
+
+Argument why a character based approach cannot be word based?
+Argue BPE *creates* new rare words because of its objective.
+
+Things we can rule out:
+There was little correlation between length and rank, so 
+
+## For paper
+Argue that decreasing length of target is orthogonal to model size?
