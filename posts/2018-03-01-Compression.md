@@ -2,6 +2,8 @@
 title: Compression and Phrases
 ---
 
+SUPER BROKEN
+
 # Segmentations
 ## BPE
 The BPE algorithm is credited to [Philip Gage](http://dl.acm.org/citation.cfm?id=177910.177914)
@@ -10,7 +12,7 @@ and was popularized in NMT by [Sennrich et al.](https://arxiv.org/abs/1508.07909
 Define `fresh` to be a function that returns a fresh variable from a class
 of strings that does not appear in the corpus.
 For example, we could have `fresh` return elements in the language
-$\{\#\sigma^+ \mid \sigma \in \{A,\ldots,Z\}\}$.
+\(\{\#\sigma^+ \mid \sigma \in \{A,\ldots,Z\}\}\).
 
 Byte pair encoding is pretty simple.
 We merge the most frequent pair of symbols into a new symbol and apply
@@ -22,9 +24,9 @@ As for encoding a new corpus, we simply apply the merge operations in the order 
 \caption{The BPE algorithm}
 \begin{algorithmic}
 \procedure{LearnBpe}{numMerges, corpus}
-\state merges $\gets$ []
-\while{len(merges) $\leq$ numMerges}
-    \state bigramCounts $\gets$ \call{CountBigrams}{corpus}
+\state merges \(\gets\) []
+\while{len(merges) \(\leq\) numMerges}
+    \state bigramCounts \(\gets\) \call{CountBigrams}{corpus}
     \state merge $\gets$ \call{MostFrequent}{bigramCounts}
     \state \call{RemoveBigram}{corpus, merge, \call{Fresh}{}}
     \state append merge to merges
@@ -33,7 +35,7 @@ As for encoding a new corpus, we simply apply the merge operations in the order 
 \endprocedure
 \procedure{ApplyBpe}{merges, corpus}
 \for{merge \textbf{in} merges}
-    \state corpus $\gets$ \call{ApplyMerge}{corpus, merge}
+    \state corpus \(\gets\) \call{ApplyMerge}{corpus, merge}
 \endfor
 \return corpus
 \endprocedure
@@ -41,7 +43,7 @@ As for encoding a new corpus, we simply apply the merge operations in the order 
 \end{algorithm}
 </pre>
 
-<script>
+<script type="module">
 var el = document.getElementById("learnbpe")
 var code = el.textContent;
 var parentEl = el.parentElement;
@@ -67,16 +69,16 @@ This can be interpreted as a coordinate ascent technique.
 
 Following the spirit of the [Latent Sequence Decomposition](https://arxiv.org/abs/1610.03035) paper,
 we will define the problem more formally.
-The LSD paper is concerned with the following: given an input $\mathbf{x}\in\bX$ and
+The LSD paper is concerned with the following: given an input \(\mathbf{x}\in\mcX\) and
 a target $\mathbf{y}\in\bY$. The paper postulates that a probabilistic decomposition
 of the target sequence conditioned on both the input sequence and output sequence is superior
 to a deterministic decomposition that is only a function of the output sequence, as in most cases.
 Note that this is not exactly true for BPE with a joint vocabulary over source and target.
 
 Rather than defining a deterministic $f:\bY\to\bZ$, since knowing the optimal segmentation of
-$\mathbf{y}$ is a nontrivial task, they propose to model $\mathbf{y}$ by marginalizing over all 
-segmentations $\mathbf{z}$.
-$$
+\(\mathbf{y}\) is a nontrivial task, they propose to model \(\mathbf{y}\) by marginalizing over all 
+segmentations \(\mathbf{z}\).
+\[
 \begin{aligned}
 \log p_\theta(\by\mid\bx) &= \log \sum_{\bz\in\bZ}p_\theta(\by,\bz\mid\bx)\\
 &= \log\sum_{\bz\in\bZ}p(\by\mid\bz,\bx)p_\theta(\bz\mid\bx)\\
@@ -104,11 +106,11 @@ $$
 &= \sum_{\bz} p_\theta(\bz\mid\by,\bx) \nabla_\theta \log p_\theta(\bz\mid\bx)\\
 &= \mathbf{E}_{\bz\thicksim p_\theta(\bz\mid\by,\bx)}[ \nabla_\theta \log p_\theta(\bz\mid\bx) ].
 \end{aligned}
-$$
+\]
 When sampling from $z_t\mid\bz_{<t},\by,\bx$ they assign probability 0 to invalid extentions.
 This implies that they do not sample from $\bz\mid\by,\bx$.
 As detailed here [in the author's thesis](http://repository.cmu.edu/cgi/viewcontent.cgi?article=1762&context=dissertations):
-$$
+\[
 \begin{aligned}
 \nabla_\theta\log p_\theta(\by\mid\bx)
 &= \frac{1}{p_\theta(\by\mid\bx)}\sum_{\bz} \bm{1}(\by=\bz)p_\theta(\bz\mid\bx) \nabla_\theta\log p_\theta(\bz\mid\bx)\\
@@ -116,7 +118,7 @@ $$
 &= \sum_{\bz} \frac{\bm{1}(\bz = \by)p_\theta(\bz\mid\bx)}{\sum_{\bz'}\bm{1}(\bz' = \by)p_\theta(\bz'\mid\bx)}
     \nabla_\theta\log p_\theta(\bz\mid\bx)
 \end{aligned}
-$$
+\]
 They compare all possible hypotheses together, including those that span multiple time steps.
 They say this leads to bias a bias towards longer sequences in sampling,
 since they compare "c", "ca", and "cat" all at the same time.

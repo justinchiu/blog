@@ -85,10 +85,11 @@ pandocMathCompiler =
             , Ext_tex_math_single_backslash
             ]
         defaultExtensions = writerExtensions defaultHakyllWriterOptions
-        newExtensions = foldr enableExtension defaultExtensions mathExtensions
+        --newExtensions = foldr enableExtension defaultExtensions mathExtensions
+        newExtensions = defaultExtensions
         writerOptions =
             defaultHakyllWriterOptions
                 { writerExtensions = newExtensions
-                , writerHTMLMathMethod = KaTeX ""
+                --, writerHTMLMathMethod = KaTeX ""
                 }
     in pandocCompilerWith defaultHakyllReaderOptions writerOptions
